@@ -35,7 +35,7 @@ mynonmonotonicity= 'monotonic', 'non-monotonic 1', 'non-monotonic 2', 'non-monot
 
 
 #load LrpB 3DS data
-file = '/Users/sdebuyl/sgo/stoch_3DS/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
+file = '/Users/sdebuyl/sgo-py/stoch_3DS/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
 
 LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
 namefiletosavedata = 'stoch_' + mymodel + 'DS'
