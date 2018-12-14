@@ -1,30 +1,44 @@
 
+
+
+#import itertools as it
+#import multiprocessing
+#from matplotlib import gridspec
+
+
 from parametersgs import *
-import itertools as it
-import multiprocessing
-from matplotlib import gridspec
-
-import os as ospack
-
 from load_fano_from_sim import *
 
+import numpy as np
 
 fanoLrpB=np.loadtxt('/Users/sdebuyl/Dropbox/fanoLrpB.txt')
 fano3DS=np.loadtxt('/Users/sdebuyl/Dropbox/fano3DS.txt')
 fano2DS=np.loadtxt('/Users/sdebuyl/Dropbox/fano2DS.txt')
 fanoMDS=np.loadtxt('/Users/sdebuyl/Dropbox/fanoMDS.txt')
+#np.savetxt('/Users/sdebuyl/fanoLrpB.txt',fanoLrpB)
 
-fanoLrpB=load_ff(mymodel='3',oscillators=DDDS,file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+if 1==9:
+    fanoLrpB=load_ff(mymodel='3',oscillators=DDDS,file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+    fano2DS=load_ff('2',DDS,'/Users/sdebuyl/stoch_2DS/')
+    fanoMDS=load_ff('M',MDS,'/Users/sdebuyl/stoch_MDS/')
+    fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+
+if 1==2:
+    fig = plt.figure()
+    #plt.hist(fanoMDS, bins=[-1.0,1,2,10,max(fanoMDS)],alpha=.3,label='MDS')
+    # #plt.hist(fano2DS, bins='auto',alpha=.3,label='2DS')
+    plt.hist(fano3DS, bins='auto',alpha=.3,label='3DS',normed=True)
+    plt.xlim([0,20])
+    plt.hist(fanoLrpB, bins='auto',alpha=.3,label='LrpB',normed=True)
+    plt.legend(loc='upper right')
+    plt.savefig('hist.pdf')
+
 print('lrpb',fanoLrpB.shape)
-
-fig = plt.figure()
- #plt.hist(fanoMDS, bins=[-1.0,1,2,10,max(fanoMDS)],alpha=.3,label='MDS')
-# #plt.hist(fano2DS, bins='auto',alpha=.3,label='2DS')
-plt.hist(fano3DS, bins='auto',alpha=.3,label='3DS',normed=True)
-plt.xlim([0,20])
-plt.hist(fanoLrpB, bins='auto',alpha=.3,label='LrpB',normed=True)
-plt.legend(loc='upper right')
-plt.savefig('hist.pdf')
+print('mds',fanoMDS.shape)
+print('2ds',fano2DS.shape)
+print('3ds',fano3DS.shape)
+print('lrpB bigger than 1',len(np.where(fanoLrpB>5.0)[0])/len(fanoLrpB))
+print('3DS bigger than 1',len(np.where(fano3DS>5.0)[0])/len(fano3DS))
 
 # bins= [-1.0,1,2,10,max(fano3DS)]
 # data = fano3DS
@@ -44,4 +58,3 @@ plt.savefig('hist.pdf')
 # plt.savefig('hist2DS.pdf')
 
 
-print('3ds',fano3DS.shape)

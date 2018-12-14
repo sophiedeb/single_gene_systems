@@ -1,3 +1,5 @@
+import os as ospack
+import numpy as np
 
 def load_ff(mymodel,oscillators,file):
     #### extract data 2DS
