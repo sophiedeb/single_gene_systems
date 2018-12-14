@@ -2,7 +2,7 @@ from MDS import *
 from DDS import *
 from DDDS import *
 
-def randomparams(oscillator, constraints, SsLrpB=False):
+def randomparams(oscillator, constraints, SsLrpB=False,Unregulated=False):
     params = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1}
     for par in ['beta', 'gammam', 'gammamRNA', 'gammad', 'alphaass', 'alphadiss', 'phi0']:
         params[par] = 10 ** (np.random.uniform(np.log10(constraints[par][0]), np.log10(constraints[par][1])))
@@ -16,12 +16,16 @@ def randomparams(oscillator, constraints, SsLrpB=False):
         for par in ['f1', 'f2', 'f12']:
             params[par] = 10**(np.random.uniform(np.log10(constraints['f'][0]), np.log10(constraints['f'][1])))
     elif (oscillator == MDS):
-        for par in ['kbm', 'kbd']:
-            params[par] = 10 ** (np.random.uniform(np.log10(constraints['kb'][0]), np.log10(constraints['kb'][1])))
-        for par in ['kum', 'kud']:
-            params[par] = 10 ** (np.random.uniform(np.log10(constraints['ku'][0]), np.log10(constraints['ku'][1])))
-        for par in ['fm', 'fd']:
-            params[par] = 10 ** (np.random.uniform(np.log10(constraints['f'][0]), np.log10(constraints['f'][1])))
+        if Unregulated==True:
+            for par in ['kbm', 'kbd', 'kum', 'kud', 'fm', 'fd']:
+                params[par] = 0
+        else:
+            for par in ['kbm', 'kbd']:
+                params[par] = 10 ** (np.random.uniform(np.log10(constraints['kb'][0]), np.log10(constraints['kb'][1])))
+            for par in ['kum', 'kud']:
+                params[par] = 10 ** (np.random.uniform(np.log10(constraints['ku'][0]), np.log10(constraints['ku'][1])))
+            for par in ['fm', 'fd']:
+                params[par] = 10 ** (np.random.uniform(np.log10(constraints['f'][0]), np.log10(constraints['f'][1])))
     elif (oscillator == DDDS):
         if (SsLrpB):
             ct = 1e-3 / 2.4
