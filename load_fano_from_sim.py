@@ -1,14 +1,14 @@
 
-def
+def load_ff(mymodel,oscillators,file):
     #### extract data 2DS
 
-    mymodel= '2'
+
     vartoplot=-1
-    oscillators = DDS
+
 
 
     #load LrpB 3DS data
-    file = '/Users/sdebuyl/stoch_2DS/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
+    #file = '/Users/sdebuyl/stoch_2DS/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
 
     LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
     namefiletosavedata = 'stoch_' + mymodel + 'DS'
@@ -79,3 +79,4 @@ def
     ##############
 
 
+    return myfanofactor3

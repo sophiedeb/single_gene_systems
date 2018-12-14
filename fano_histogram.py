@@ -1,6 +1,12 @@
 
-import matplotlib.pylab as plt
-import numpy as np
+from parametersgs import *
+import itertools as it
+import multiprocessing
+from matplotlib import gridspec
+
+import os as ospack
+
+from load_fano_from_sim import *
 
 
 fanoLrpB=np.loadtxt('/Users/sdebuyl/Dropbox/fanoLrpB.txt')
@@ -8,7 +14,8 @@ fano3DS=np.loadtxt('/Users/sdebuyl/Dropbox/fano3DS.txt')
 fano2DS=np.loadtxt('/Users/sdebuyl/Dropbox/fano2DS.txt')
 fanoMDS=np.loadtxt('/Users/sdebuyl/Dropbox/fanoMDS.txt')
 
-
+fanoLrpB=load_ff(mymodel='3',oscillators=DDDS,file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+print('lrpb',fanoLrpB.shape)
 
 fig = plt.figure()
  #plt.hist(fanoMDS, bins=[-1.0,1,2,10,max(fanoMDS)],alpha=.3,label='MDS')
@@ -36,5 +43,5 @@ plt.savefig('hist.pdf')
 #
 # plt.savefig('hist2DS.pdf')
 
-print('lrpb',fanoLrpB.shape)
+
 print('3ds',fano3DS.shape)
