@@ -5,16 +5,18 @@ from matplotlib import gridspec
 import matplotlib.pylab as plt
 import os as ospack
 from collections import OrderedDict
+import random as random
 
+# for jj=1[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
 
 ########################################################################################################################
 # inputs to be adapted according to the model
 ########################################################################################################################
 
 # choose the model ('M'=MDS,'2'=DDS, '3'=DDDS)
-mymodel = 'M'
+mymodel = '3'
 # choose the model (MDS,DDS,DDDS)
-oscillator = MDS
+oscillator = DDDS
 LrpBornot = False
 # inputs that can vary as a function of the performed analysis
 maxnumberofmolecules = 500
@@ -23,8 +25,8 @@ dt = .1
 tmax = t_f * dt
 t = np.arange(0, t_f, dt)
 # to avoid plottin too many traces on one plot:
-max_number_traces_on_one_plot = 30
-timetraces=False
+max_number_traces_on_one_plot = 15
+timetraces=True
 
 ########################################################################################################################
 # inputs common to all models
@@ -118,21 +120,32 @@ if timetraces==True:
             namefig='timelapse_' + mymodel + 'DS_type_' + str(jj)+'_LrpB'
         else:
             namefig='timelapse_' + mymodel + 'DS_type_' + str(jj)
-        fig = plt.figure(namefig, figsize=(12, 5), tight_layout=True)
+
+
+        fig = plt.figure(namefig, figsize=(15, 5))#, tight_layout=True)
+
         # create a subplot for the concentration of dimers as a function of time
-        ax = fig.add_subplot(1, 4, 1)
-        axleg = fig.add_subplot(1, 4, 4)
+        ax = fig.add_subplot(1, 3, 1)
+        #axleg = fig.add_subplot(1, 4, 4)
         # ax.set_yscale('log')
         # 	#ax.set_ylim([0.0, 4*ssdimer])
         ax.set_xlabel('time')
         ax.set_ylabel('dimer copy number')
         # create a subplot for the response curve
-        ax2 = fig.add_subplot(1, 4, 2)
+        ax2 = fig.add_subplot(1, 3, 2)
+        ax2.set_xlabel('dimer copy number')
+        ax2.set_ylabel('activation fold')
         # create a subplot for the fano factors
-        ax3 = fig.add_subplot(1,4,3)
+        ax3 = fig.add_subplot(1,3,3)
+        ax3.set_xlabel('mean dimer copy number')
+        ax3.set_ylabel('fano factor')
 
         # loop over all simulations for the "j" type
         for k in range(len(lists[jj])):
+            print('k is ',k)
+            print('jj is ', jj)
+            print(lists[jj][k])
+
             myparams = np.loadtxt(file + namefiletosavedata + '_parms_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
             #mymeans = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
             #myvars = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
@@ -160,8 +173,19 @@ if timetraces==True:
             myvars_wt[jj][k] = np.var(ts_transcient[vartoplot, :])
             #print(str(lists[jj][k]), 'var', myvars_wt[jj][k])
 
-            # plot a selection of time traces, and the corresponding response curve
-            if (k < max_number_traces_on_one_plot):
+            # plot a selection of time traces, and the corresponding response curve -- random.sample(max_number_traces_on_one_plot)
+            #range(len(lists[jj]))
+            if k==0:
+                sampling=random.sample(lists[jj],max_number_traces_on_one_plot)
+                #if jj==1:
+                 #   [214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
+                tempp=lists[jj]
+                print('lists jj',lists[jj])
+                print('sampling',sampling)
+
+
+            if np.in1d(lists[jj][k],sampling): #max_number_traces_on_one_plot):
+                print('active k',k)
                 sample = np.arange(0,len(t),100)
                 if mymeans_wt[jj][k]!=0:
                     mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
@@ -178,12 +202,13 @@ if timetraces==True:
                 ax2.plot(xx, myrate, c=l[0].get_color())
                 if mymeans_wt[jj][k] !=0:
                     ax3.scatter(mymeans_wt[jj][k],myvars_wt[jj][k]/mymeans_wt[jj][k], c=l[0].get_color())
-        handles, labels = ax.get_legend_handles_labels()
-        by_label = OrderedDict(zip(labels, handles))
-        leg = axleg.legend(by_label.values(), by_label.keys(), ncol=1, loc=10, frameon=False, title='fano factor',
-                           fontsize=11, )
-        axleg.axis('off')
-        plt.tight_layout()
+        #following lines where added to add legend
+        #handles, labels = ax.get_legend_handles_labels()
+        #by_label = OrderedDict(zip(labels, handles))
+        #leg = axleg.legend(by_label.values(), by_label.keys(), ncol=1, loc=10, frameon=False, title='fano factor',
+                        #fontsize=11, )
+        #axleg.axis('off')
+        #plt.tight_layout()
 
         fig.savefig(namefig + '.pdf')
 
@@ -220,33 +245,6 @@ else:
              mymeans_wt = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
              myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
              temp=mymeans_wt[vartoplot]
-             ax.scatter(mymeans_wt[vartoplot],myvars_wt[vartoplot]/mymeans_wt[vartoplot])
+             if mymeans_wt[vartoplot]!=0.0:
+                ax.scatter(mymeans_wt[vartoplot],myvars_wt[vartoplot]/mymeans_wt[vartoplot])
      fig3.savefig('noise.pdf')
-#
-#     plt.show()
-# # # ax.plot(stochtemp.t,dde[:,9])
-# # # ax2 = fig.add_subplot(2,1,1)
-# # # ax2.plot()
-# # # #fig.savefig("timelapse.pdf")
-# print(fanolist)
-# myindex=~np.isnan(fanolist)
-# print('myindex',myindex)
-# fanolist = fanolist[myindex]
-# meanlist = meanlist[myindex]
-
-# sort_indices = meanlist.argsort()
-# fanolist = fanolist[sort_indices]
-# meanlist = meanlist[sort_indices]
-
-# print(meanlist)
-# print(fanolist)
-# fig = plt.figure('fano_'+mymodel+'DS', figsize=(8, 5), tight_layout=True)
-# # #subplot cree des sous zones dans la figure
-# ax = fig.add_subplot(1,1,1)
-# #ax.set_yscale('log')
-# # 	#ax.set_ylim([0.0, 4*ssdimer])
-# ax.set_xlabel('dimer mean')
-# ax.set_ylabel('dimer fano factor')
-# ax.plot(meanlist,fanolist)
-# plt.loglog()
-# plt.show()

@@ -16,7 +16,7 @@ import time
 # (TO DO) if once=False, the code can be use for large scans, with results saved in txt file (param sets, and time series)
 #once = False
 
-def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBornot):
+def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBornot,Unregulated=False):
 	# oscillator is the type of model (MDS, 2DS or 3DS), 
 	# number_of_parameter_sets: size of the scan
 	# t_f, dt to define max time of simulation, and saving time. 
@@ -159,10 +159,10 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 		#dde = odeint(os.eqns, y0, t,args=(1.0,1.0))
 		#rseed,oscillator, namefiletosavedata,t_f,dt,maxmolecules
 
-def mainf(oscillator,numb_scanned_sets,namefiletosavedata,t_f,dt,numberofcores,maxmolecules,shift,LrpBornot):
+def mainf(oscillator,numb_scanned_sets,namefiletosavedata,t_f,dt,numberofcores,maxmolecules,shift,LrpBornot,Unregulated=False):
 	np.random.seed(int(time.time()))
 	p = multiprocessing.Pool(numberofcores)
-	randomscan_assigned=partial(randomscan,oscillator=oscillator,namefiletosavedata=namefiletosavedata,t_f=t_f,dt=dt,maxmolecules=maxmolecules,shift=shift,LrpBornot=LrpBornot)
+	randomscan_assigned=partial(randomscan,oscillator=oscillator,namefiletosavedata=namefiletosavedata,t_f=t_f,dt=dt,maxmolecules=maxmolecules,shift=shift,LrpBornot=LrpBornot,Unregulated=False)
 	r=range(numb_scanned_sets)
 	#debug mode
 	for kkk in range(200):
