@@ -16,7 +16,7 @@ import time
 # (TO DO) if once=False, the code can be use for large scans, with results saved in txt file (param sets, and time series)
 #once = False
 
-def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBornot,Unregulated=False):
+def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBornot,Unregulated):
 	# oscillator is the type of model (MDS, 2DS or 3DS), 
 	# number_of_parameter_sets: size of the scan
 	# t_f, dt to define max time of simulation, and saving time. 

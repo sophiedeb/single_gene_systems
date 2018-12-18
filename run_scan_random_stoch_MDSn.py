@@ -1,8 +1,8 @@
 from scan_random_stoch import *
 
 
-namefiletosavedata="./stoch_MDSn/stoch_MDS"
-t_f = 2000
+namefiletosavedata="Users/sdebuyl/stoch_MDSn/stoch_MDS"
+t_f = 20
 dt = .1
 numberofcores=4
 numberofparametersets=numberofcores*10
