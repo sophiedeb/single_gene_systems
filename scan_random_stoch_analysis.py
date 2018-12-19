@@ -328,7 +328,7 @@ if fig10==True:
             sampling=random.sample(lists[jj],max_number_traces_on_one_plot)
             #if jj==1:
              #   [214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
-            sampling=[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
+            #sampling=[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
             tempp=lists[jj]
             print('lists jj',lists[jj])
             print('sampling',sampling)
@@ -371,8 +371,8 @@ if fig10==True:
     print('lrpB', fanoLrpB.shape)
     # print('2ds',fano2DS.shape)
     print('3ds', fano3DS.shape)
-    print('LrpB bigger than 2', len(np.where(fanoLrpB > 2.0)[0]) / len(fanoLrpB))
-    print('3DS bigger than 2', len(np.where(fano3DS > 2.0)[0]) / len(fano3DS))
+    print('LrpB bigger than 1', len(np.where(fanoLrpB > 1.0)[0]) / len(fanoLrpB))
+    print('3DS bigger than 1', len(np.where(fano3DS > 1.0)[0]) / len(fano3DS))
 
 
 
