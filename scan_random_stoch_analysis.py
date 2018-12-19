@@ -6,7 +6,12 @@ import matplotlib.pylab as plt
 import os as ospack
 from collections import OrderedDict
 import random as random
+import matplotlib as mpl
+from load_fano_from_sim import *
 
+timetraces=False
+noisefig=False
+fig10=True
 # for jj=1[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
 
 ########################################################################################################################
@@ -17,7 +22,10 @@ import random as random
 mymodel = '3'
 # choose the model (MDS,DDS,DDDS)
 oscillator = DDDS
-LrpBornot = False
+LrpBornot = True
+if fig10==True:
+    LrpBornot=True
+
 # inputs that can vary as a function of the performed analysis
 maxnumberofmolecules = 500
 t_f = 2000
@@ -26,7 +34,7 @@ tmax = t_f * dt
 t = np.arange(0, t_f, dt)
 # to avoid plottin too many traces on one plot:
 max_number_traces_on_one_plot = 15
-timetraces=True
+
 
 ########################################################################################################################
 # inputs common to all models
@@ -48,7 +56,7 @@ pars_comm = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1};
 
 
 ########################################################################################################################
-# load data, put data in lists (according to non-monotonicity type
+# load data, put data in lists (according to non-monotonicity type)
 ########################################################################################################################
 
 if LrpBornot==True:
@@ -99,7 +107,6 @@ mymeans2 = np.zeros(len(list2))
 mymeans3 = np.zeros(len(list3))
 
 mymeans_wt = [mymeans0, mymeans1, mymeans2, mymeans3]
-
 myvars0 = np.zeros(len(list0))
 myvars1 = np.zeros(len(list1))
 myvars2 = np.zeros(len(list2))
@@ -133,7 +140,7 @@ if timetraces==True:
         ax.set_ylabel('dimer copy number')
         # create a subplot for the response curve
         ax2 = fig.add_subplot(1, 3, 2)
-        ax2.set_xlabel('dimer copy number')
+        ax2.set_xlabel('monomer copy number')
         ax2.set_ylabel('activation fold')
         # create a subplot for the fano factors
         ax3 = fig.add_subplot(1,3,3)
@@ -142,9 +149,7 @@ if timetraces==True:
 
         # loop over all simulations for the "j" type
         for k in range(len(lists[jj])):
-            print('k is ',k)
-            print('jj is ', jj)
-            print(lists[jj][k])
+
 
             myparams = np.loadtxt(file + namefiletosavedata + '_parms_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
             #mymeans = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
@@ -185,11 +190,11 @@ if timetraces==True:
 
 
             if np.in1d(lists[jj][k],sampling): #max_number_traces_on_one_plot):
-                print('active k',k)
+
                 sample = np.arange(0,len(t),100)
                 if mymeans_wt[jj][k]!=0:
                     mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
-                    print(mylabel)
+
                 else:
                     mylabel='nan'
                 l = ax.plot(t[sample], ts[vartoplot][sample],label=mylabel)
@@ -234,7 +239,7 @@ if timetraces==True:
     plt.plot(mymeans_wt[1][temp], myvars_wt[1][temp] / mymeans_wt[1][temp], 'bo')
     fig2.savefig(namefig2+'_noise.pdf')
 
-else:
+if noisefig==True:
 
      fig3 = plt.figure()
      gs = gridspec.GridSpec(2,2)
@@ -248,3 +253,150 @@ else:
              if mymeans_wt[vartoplot]!=0.0:
                 ax.scatter(mymeans_wt[vartoplot],myvars_wt[vartoplot]/mymeans_wt[vartoplot])
      fig3.savefig('noise.pdf')
+
+
+
+if fig10==True:
+
+    ########################################################################################################################
+    # plot the data
+    ########################################################################################################################
+
+
+    # start the figure : jj labels the different types of non-monotonicity (different non-monotonicity types will be put in different figures)
+    jj=1
+    namefig='fig10'
+
+
+
+    font = {'family':'Arial', 'size':10}
+    mpl.rc('font', **font)
+    mpl.rc('legend', handlelength=1)
+
+    fig = plt.figure(namefig, figsize=(10,5))#, tight_layout=True)
+    gs = gridspec.GridSpec(1,2, width_ratios=[5,5], height_ratios=[1])
+
+    # create a subplot for the concentration of dimers as a function of time
+    ax = fig.add_subplot(gs[0])
+    ax.set_title('A', size=10, x=-0.2, y=1.1, ha='left')
+    #axleg = fig.add_subplot(1, 4, 4)
+    # ax.set_yscale('log')
+    # 	#ax.set_ylim([0.0, 4*ssdimer])
+    ax.set_xlabel('time')
+    ax.set_ylabel('dimer copy number')
+    # create a subplot for the histogram of fano factors
+    ax2 = fig.add_subplot(gs[1])
+    ax2.set_title('B', size=10, x=-0.2, y=1.1, ha='left')
+
+    ax2.set_xlabel('Fano factor')
+    ax2.set_ylabel('freq. of solutions')
+
+    # loop over all simulations for the "j" type
+    for k in range(len(lists[jj])):
+
+
+        myparams = np.loadtxt(file + namefiletosavedata + '_parms_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+        #mymeans = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+        #myvars = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+        ts = np.loadtxt(file + namefiletosavedata + '_ts_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+        dimts=np.shape(ts)
+        pars = pars_comm
+        for idx, par in enumerate(os.nameparameters):
+            pars[par] = myparams[idx]
+        # assign parameters "pars" to the "os" model,  and compute steady state of the model
+        os.setparameters(pars)
+        os.steadystate()
+
+        # intial conditions - set in to be ss for proteins and mrna, dna starts unbound.
+        myinitialcond = np.zeros(dimts[0])
+        for kk in range(dimts[0]):
+            myinitialcond[kk] = os.ss[os.allvars[kk]]
+        #we solve the deterministic model
+        tt = np.arange(0, 2000, .001)
+        dde = odeint(os.eqns, myinitialcond, tt, args=(1.0, 1.0))
+
+        # remove transient before computing mean-variance
+        ts_transcient = ts#ts[:, 500:t_f]
+        mymeans_wt[jj][k] = np.mean(ts_transcient[vartoplot, :])
+        #print(str(lists[jj][k]), 'mean', mymeans_wt[jj][k])
+        myvars_wt[jj][k] = np.var(ts_transcient[vartoplot, :])
+        #print(str(lists[jj][k]), 'var', myvars_wt[jj][k])
+
+        # plot a selection of time traces, and the corresponding response curve -- random.sample(max_number_traces_on_one_plot)
+        #range(len(lists[jj]))
+        if k==0:
+            sampling=random.sample(lists[jj],max_number_traces_on_one_plot)
+            #if jj==1:
+             #   [214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
+            sampling=[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
+            tempp=lists[jj]
+            print('lists jj',lists[jj])
+            print('sampling',sampling)
+
+
+        if np.in1d(lists[jj][k],sampling): #max_number_traces_on_one_plot):
+
+            sample = np.arange(500,len(t),100)
+            if mymeans_wt[jj][k]!=0:
+                mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
+
+            else:
+                mylabel='nan'
+            l = ax.plot(t[sample], ts[vartoplot][sample],label=mylabel,linewidth=.7)
+            sample = np.arange(0, len(tt), 100)
+            ax.plot(tt[sample], dde[sample,vartoplot], c=l[0].get_color(),linewidth=.7)
+            # ax.set_yscale('log')
+            ax.set_ylim([0, maxnumberofmolecules * 1.2])
+
+    fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/stoch_LrpB/')
+    fano3DS = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/sgo/stoch_3DS/')
+    if 1 == 9:
+        fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+        fano2DS = load_ff('2', DDS, '/Users/sdebuyl/stoch_2DS/')
+        fanoMDS = load_ff('M', MDS, '/Users/sdebuyl/stoch_MDS/')
+        fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
+
+    bins = np.linspace(0, 20, 100)
+    bins = np.append(bins, np.max([np.max(fanoLrpB), np.max(fano3DS)]))
+    if 1 == 1:
+        # plt.hist(fanoMDS, bins=[-1.0,1,2,10,max(fanoMDS)],alpha=.3,label='MDS')
+        # #plt.hist(fano2DS, bins='auto',alpha=.3,label='2DS')
+        ax2.hist(fanoLrpB, bins=bins, alpha=.3, label='LrpB', normed=True)
+        ax2.set_xlim([0, 20])
+
+        ax2.hist(fano3DS, bins=bins, alpha=.3, label='3DS', normed=True)
+        ax2.legend(loc='upper right')
+
+    # print('lrpb',fanoLrpB.shape)
+    print('lrpB', fanoLrpB.shape)
+    # print('2ds',fano2DS.shape)
+    print('3ds', fano3DS.shape)
+    print('LrpB bigger than 2', len(np.where(fanoLrpB > 2.0)[0]) / len(fanoLrpB))
+    print('3DS bigger than 2', len(np.where(fano3DS > 2.0)[0]) / len(fano3DS))
+
+
+
+
+    fig.savefig(namefig + '.pdf')
+
+    plt.close("all")
+
+    # removezeros = np.where(mymeans_wt[1] != 0)[0]
+    # print('number of simulations with zero mean value', len(removezeros))
+    # mymeans_wt[1] = mymeans_wt[1][removezeros]
+    # myvars_wt[1] = myvars_wt[1][removezeros]
+    #
+    # temp = [ii[0] for ii in sorted(enumerate(mymeans_wt[1]), key=lambda x: x[1])]
+    #
+    #
+    # # mymeans_wt_ordered=mymeans_wt[1](ii)
+    #
+    # if LrpBornot==True:
+    #     namefig2='noise_LrpB'
+    # else:
+    #     namefig2='noise_'+mymodel+'DS'
+    #
+    # fig2 = plt.figure(namefig2, figsize=(8, 5), tight_layout=True)
+    #
+    # plt.plot(mymeans_wt[1][temp], myvars_wt[1][temp] / mymeans_wt[1][temp], 'bo')
+    # fig2.savefig(namefig2+'_noise.pdf')

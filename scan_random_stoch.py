@@ -36,7 +36,8 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 	# assign physiological range
 	physrange = physiologicalRange()
 	# draw random numbers
-	pars=randomparams(oscillator, constraints=physrange, SsLrpB=LrpBornot)
+	#randomparams(oscillator, constraints, Unregulated,SsLrpB=False):
+	pars=randomparams(oscillator, constraints=physrange, Unregulated=Unregulated,SsLrpB=LrpBornot)
 	# assign parameters
 	os.setparameters(pars)
 	# compute steady-state - the steadystate is stored in variable called "ss"
@@ -128,7 +129,8 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 
 		else:
 			#steadystate too high
-			with open(fsteadystatestoohigh,"a") as file:
+
+			with open(fsteadystatestoohigh,"a+") as file:
 				s= ''
 				for myvar in os.allvars:
 					s += '%f\t'%(os.ss[myvar])
@@ -136,7 +138,7 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 				file.write(s)		
 			file.close()
 			fpar = namefiletosavedata+"_params_too_high.txt"
-			with open(fpar, "a") as file:
+			with open(fpar, "a+") as file:
 				file.write(os.parameterline())
 			file.close()
 	else:
@@ -147,7 +149,7 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 		file.close() 
 		#save parameter set considered:
 		fpar = namefiletosavedata+"_multi_parms.txt"
-		with open(fpar, "a") as file:
+		with open(fpar, "a+") as file:
 			file.write(os.parameterline())
 		file.close()
 			
@@ -159,12 +161,12 @@ def randomscan(r,oscillator, namefiletosavedata,t_f,dt,maxmolecules,shift,LrpBor
 		#dde = odeint(os.eqns, y0, t,args=(1.0,1.0))
 		#rseed,oscillator, namefiletosavedata,t_f,dt,maxmolecules
 
-def mainf(oscillator,numb_scanned_sets,namefiletosavedata,t_f,dt,numberofcores,maxmolecules,shift,LrpBornot,Unregulated=False):
+def mainf(oscillator,numb_scanned_sets,namefiletosavedata,t_f,dt,numberofcores,maxmolecules,shift,LrpBornot,Unregulated):
 	np.random.seed(int(time.time()))
 	p = multiprocessing.Pool(numberofcores)
-	randomscan_assigned=partial(randomscan,oscillator=oscillator,namefiletosavedata=namefiletosavedata,t_f=t_f,dt=dt,maxmolecules=maxmolecules,shift=shift,LrpBornot=LrpBornot,Unregulated=False)
+	randomscan_assigned=partial(randomscan,oscillator=oscillator,namefiletosavedata=namefiletosavedata,t_f=t_f,dt=dt,maxmolecules=maxmolecules,shift=shift,LrpBornot=LrpBornot,Unregulated=Unregulated)
 	r=range(numb_scanned_sets)
 	#debug mode
-	for kkk in range(200):
-		randomscan_assigned(0)
-	#p.map(randomscan_assigned,r)
+	#for kkk in range(200):
+	#	randomscan_assigned(0)
+	p.map(randomscan_assigned,r)

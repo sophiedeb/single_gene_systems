@@ -2,27 +2,16 @@ import os as ospack
 import numpy as np
 
 def load_ff(mymodel,oscillators,file):
-    #### extract data 2DS
-
-
     vartoplot=-1
-
-
-
-    #load LrpB 3DS data
-    #file = '/Users/sdebuyl/stoch_2DS/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
-
     LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
     namefiletosavedata = 'stoch_' + mymodel + 'DS'
-    # actually import the data:
+    # load all files names
     mylist = ospack.listdir(file)
     # create list for each type of non-monotonicity
     list0 = list()
     list1 = list()
     list2 = list()
     list3 = list()
-    # create a counter for spiky solution
-    counter_spikes_LrpB=0
     for kk in mylist:
 
         if kk.find('stoch_' + mymodel + 'DS_parms_') != -1:
@@ -43,9 +32,8 @@ def load_ff(mymodel,oscillators,file):
     print('len list 1', len(list1))
     print('len list 2', len(list2))
     print('len list 3', len(list3))
-    tot_simulations_LrpB=len(list0)+len(list1)+len(list2)+len(list3)
+    tot_simulations=len(list0)+len(list1)+len(list2)+len(list3)
 
-    # we will plot the fano factor as a function of the mean value of the dimer concentration
     # we first create empty arrays to be filled with means and variances of each simulation
     mymeans0 = np.zeros(len(list0))
     mymeans1 = np.zeros(len(list1))
@@ -63,22 +51,16 @@ def load_ff(mymodel,oscillators,file):
 
 
 
-    myfanofactor3=np.array([])
+    myfanofactors=np.array([])
 
-    jj=1
+    for jj in range(4):
 
-    for k in range(len(lists[jj])):  #np.random.choice(len(lists[jj]),160)
-        mymeans_wt = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-        myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-        temp = mymeans_wt[vartoplot]
-        if temp!=0:
-            myfanofactor3=np.append(myfanofactor3,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
-
-
-
-    ##############
-    ##############
-    ##############
+        for k in range(len(lists[jj])):  #np.random.choice(len(lists[jj]),160)
+            mymeans_wt = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+            myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+            temp = mymeans_wt[vartoplot]
+            if temp!=0:
+                myfanofactors=np.append(myfanofactors,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
 
 
-    return myfanofactor3
+    return myfanofactors

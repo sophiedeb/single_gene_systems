@@ -2,7 +2,7 @@ from MDS import *
 from DDS import *
 from DDDS import *
 
-def randomparams(oscillator, constraints, SsLrpB=False,Unregulated=False):
+def randomparams(oscillator, constraints, Unregulated,SsLrpB=False):
     params = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1}
     for par in ['beta', 'gammam', 'gammamRNA', 'gammad', 'alphaass', 'alphadiss', 'phi0']:
         params[par] = 10 ** (np.random.uniform(np.log10(constraints[par][0]), np.log10(constraints[par][1])))
@@ -17,7 +17,9 @@ def randomparams(oscillator, constraints, SsLrpB=False,Unregulated=False):
             params[par] = 10**(np.random.uniform(np.log10(constraints['f'][0]), np.log10(constraints['f'][1])))
     elif (oscillator == MDS):
         if Unregulated==True:
-            for par in ['kbm', 'kbd', 'kum', 'kud', 'fm', 'fd']:
+            for par in ['kum', 'kud']:
+                params[par] = 1
+            for par in ['kbm', 'kbd', 'fm', 'fd']:
                 params[par] = 0
         else:
             for par in ['kbm', 'kbd']:

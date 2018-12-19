@@ -584,7 +584,6 @@ class SG:
             reactions = self.reactionmatrix()
             reaccount = np.zeros((reactions.shape)[1])
             atH = False;
-            print('bug',self.allvars)
             idxd = np.where(self.allvars=='d')[0][0]
             maxd = 0.95*max(self.steadystate()['d'])
 
