@@ -21,12 +21,54 @@ timetraces=False
 #(diff. colors for diff. types of non monotonicity) - compare the diff models
 noisefig=False
 #Plot figure 10 of the paper
-fig10=True
+fig10=False
 #Look at multistability and high copy number (bigger than 500)
-multistab=False
+multistab=True
 
 
+def high_and_multi(file,modelname):
+    print(file)
+    mylist = ospack.listdir(file)
+    counter = 0
+    for item in mylist:
+        if (item.find('mean')) != -1:
+            counter = counter + 1
+    print(counter)
 
+    counter = 0
+    for item in mylist:
+        if (item.find('too_high')) != -1:
+            counter = counter + 1
+    print(counter)
+
+    fileH = file + modelname + '_too_high.txt'
+    if counter!=0:
+        toohigh = np.loadtxt(fileH)
+        print('too high', toohigh.shape)
+        kk=2
+    else:
+        print('no solutions too high')
+        kk=0
+    fileM = file + modelname + '_multi_parms.txt'
+    if ospack.path.isfile(fileM):
+        multi = np.loadtxt(fileM)
+        print('multi', multi.shape)
+        mm=2
+    else:
+        print('no multistability')
+        mm=0
+    counter2=0
+    for item in mylist:
+        if (item.find('ts')) != -1:
+            counter2=counter2+1
+
+    print(counter2)
+    if counter2==0:
+        print('number of not too high/multi simulations ', (len(mylist) - (kk+mm))/ 4)
+    else:
+        print('number of not too high/multi simulations ', (len(mylist) - (kk+mm)) / 5)
+
+    print('')
 
 ########################################################################################################################
 # inputs to be adapted according to the model
@@ -233,7 +275,7 @@ if fig10==True:
 
     # create a subplot for the concentration of dimers as a function of time
     ax = fig.add_subplot(gs[0])
-    ax.set_title('A', size=10, x=-0.2, y=.9, ha='left')
+    ax.set_title('A', size=10, x=-0.2, y=1, ha='left')
     #axleg = fig.add_subplot(1, 4, 4)
     # ax.set_yscale('log')
     # 	#ax.set_ylim([0.0, 4*ssdimer])
@@ -264,15 +306,12 @@ if fig10==True:
         tt = np.arange(0, 2000, .001)
         dde = odeint(os.eqns, myinitialcond, tt, args=(1.0, 1.0))
 
-        # remove transient before computing mean-variance
+        # remove transient before computing mean-variance (not done)
         ts_transcient = ts#ts[:, 500:t_f]
-        #mymeans_wt[jj][k] = np.mean(ts_transcient[vartoplot, :])
-        #print(str(lists[jj][k]), 'mean', mymeans_wt[jj][k])
-        #myvars_wt[jj][k] = np.var(ts_transcient[vartoplot, :])
-        #print(str(lists[jj][k]), 'var', myvars_wt[jj][k])
+
 
         # plot a selection of time traces, and the corresponding response curve -- random.sample(max_number_traces_on_one_plot)
-        #range(len(lists[jj]))
+        # because for LrpB we only have type 1,we have imposed jj=1
         if k==0:
             sampling=random.sample(lists[jj],max_number_traces_on_one_plot)
             sampling=[759, 161, 1480, 1264, 1216, 1478, 76, 1275, 1549, 1091, 1079, 237, 1122, 211, 1278]#if jj==1:
@@ -285,7 +324,7 @@ if fig10==True:
 
         if np.in1d(lists[jj][k],sampling): #max_number_traces_on_one_plot):
 
-            sample = np.arange(1000,len(t),10)
+            sample = np.arange(1200,len(t),10)
             #if mymeans_wt[jj][k]!=0:
             #    mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
 
@@ -300,8 +339,7 @@ if fig10==True:
 
     # create a subplot for the histogram of fano factors
     ax2 = fig.add_subplot(gs[1])
-    ax2.set_title('B', size=10, x=-0.2, y=.9, ha='left')
-
+    ax2.set_title('B', size=10, x=-0.1, y=1, ha='left')
     ax2.set_xlabel('Fano factor')
     ax2.set_ylabel('freq. of solutions')
 
@@ -319,12 +357,11 @@ if fig10==True:
         ax2.hist(fano3DS, bins=bins, alpha=.3, label='3DS', normed=True)
         ax2.legend(loc='upper right')
 
-    # print('lrpb',fanoLrpB.shape)
+
     print('lrpB', fanoLrpB.shape)
-    # print('2ds',fano2DS.shape)
     print('3ds', fano3DS.shape)
-    print('LrpB bigger than 1', len(np.where(fanoLrpB > 1.0)[0]) / len(fanoLrpB))
-    print('3DS bigger than 1', len(np.where(fano3DS > 1.0)[0]) / len(fano3DS))
+    print('LrpB bigger than 1', len(np.where(fanoLrpB > 1.5)[0]) / len(fanoLrpB))
+    print('3DS bigger than 1', len(np.where(fano3DS > 1.5)[0]) / len(fano3DS))
 
 
 
@@ -333,64 +370,16 @@ if fig10==True:
 
     plt.close("all")
 
-    # removezeros = np.where(mymeans_wt[1] != 0)[0]
-    # print('number of simulations with zero mean value', len(removezeros))
-    # mymeans_wt[1] = mymeans_wt[1][removezeros]
-    # myvars_wt[1] = myvars_wt[1][removezeros]
-    #
-    # temp = [ii[0] for ii in sorted(enumerate(mymeans_wt[1]), key=lambda x: x[1])]
-    #
-    #
-    # # mymeans_wt_ordered=mymeans_wt[1](ii)
-    #
-    # if LrpBornot==True:
-    #     namefig2='noise_LrpB'
-    # else:
-    #     namefig2='noise_'+mymodel+'DS'
-    #
-    # fig2 = plt.figure(namefig2, figsize=(8, 5), tight_layout=True)
-    #
-    # plt.plot(mymeans_wt[1][temp], myvars_wt[1][temp] / mymeans_wt[1][temp], 'bo')
-    # fig2.savefig(namefig2+'_noise.pdf')
+
 
 
 if multistab==True:
-    print('LrpB')
-    file='/Users/sdebuyl/sgo/stoch_LrpB/'
-    mylist = ospack.listdir(file)
-    print('number of not too high/multi simulations ', (len(mylist)-4)/5)
-    file=file +'stoch_3DS_too_high.txt'
+    high_and_multi('/Users/sdebuyl/sgo/stoch_LrpB/','stoch_3DS')
+    high_and_multi('/Users/sdebuyl/sgo/stoch_3DS/','stoch_3DS')
+    high_and_multi('/Users/sdebuyl/stoch_2DS/','stoch_2DS')
+    high_and_multi('/Users/sdebuyl/sgo/stoch_MDS/','stoch_MDS')
+    high_and_multi('/Users/sdebuyl/stoch_MDS/','stoch_MDS')
 
-    toohigh = np.loadtxt(file)
-    print('too high', toohigh.shape)
-    multi=np.loadtxt('/Users/sdebuyl/sgo/stoch_LrpB/stoch_3DS_multi_parms.txt')
-    print('multi',multi.shape)
-    print('')
-
-    #stoch_3DS_multi_parms
-    print('3DS')
-    file='/Users/sdebuyl/sgo/stoch_3DS/'
-    mylist = ospack.listdir(file)
-    print('number of not too high/multi simulations ', (len(mylist)-4)/4)
-    toohigh = np.loadtxt(file+'stoch_3DS_too_high.txt')
-    print('too high', toohigh.shape)
-    multi = np.loadtxt(file +'stoch_3DS_multi_parms.txt')
-    print('multi', multi.shape)
-    print('')
-
-
-    #
-    print('2DS')
-    toohigh = np.loadtxt('/Users/sdebuyl/sgo/stoch_2DS/stoch_2DS_too_high.txt')
-    print('too high', toohigh.shape)
-    multi = np.loadtxt('/Users/sdebuyl/sgo/stoch_2DS/stoch_2DS_multi_parms.txt')
-    print('multi', multi.shape)
-    #
-    print('MDS')
-    toohigh = np.loadtxt('/Users/sdebuyl/stoch_MDS/stoch_MDS_too_high.txt')
-    print('too high', toohigh.shape)
-    multi = np.loadtxt('/Users/sdebuyl/stoch_MDS/stoch_MDS_multi_parms.txt')
-    print('multi', multi.shape)
 
 
 
