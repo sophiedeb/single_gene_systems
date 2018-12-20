@@ -21,7 +21,6 @@ def load_ff(mymodel,oscillators,file):
                 list0.append(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '1':
                 list1.append(int(kk[18 + LrpB_shift:end]))
-                print(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '2':
                 list2.append(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '3':
@@ -67,3 +66,32 @@ def load_ff(mymodel,oscillators,file):
 
 
     return myfanofactors
+
+def mylists(mymodel,file):
+
+    LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
+    namefiletosavedata = 'stoch_' + mymodel + 'DS'
+    # load all files names
+    mylist = ospack.listdir(file)
+    # create list for each type of non-monotonicity
+    list0 = list()
+    list1 = list()
+    list2 = list()
+    list3 = list()
+    for kk in mylist:
+
+        if kk.find('stoch_' + mymodel + 'DS_parms_') != -1:
+            end = kk.find('.txt')
+            if kk[16 + LrpB_shift:17 + LrpB_shift] == '0':
+                list0.append(int(kk[18 + LrpB_shift:end]))
+            if kk[16 + LrpB_shift:17 + LrpB_shift] == '1':
+                list1.append(int(kk[18 + LrpB_shift:end]))
+            if kk[16 + LrpB_shift:17 + LrpB_shift] == '2':
+                list2.append(int(kk[18 + LrpB_shift:end]))
+            if kk[16 + LrpB_shift:17 + LrpB_shift] == '3':
+                list3.append(int(kk[18 + LrpB_shift:end]))
+
+    lists = [list0, list1, list2, list3]
+
+
+    return lists

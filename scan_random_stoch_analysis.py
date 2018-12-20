@@ -21,9 +21,9 @@ timetraces=False
 #(diff. colors for diff. types of non monotonicity) - compare the diff models
 noisefig=False
 #Plot figure 10 of the paper
-fig10=False
+fig10=True
 #Look at multistability and high copy number (bigger than 500)
-multistab=True
+multistab=False
 
 
 
@@ -41,7 +41,7 @@ if fig10==True:
     LrpBornot=True
 
 # inputs that can vary as a function of the performed analysis
-maxnumberofmolecules = 10
+maxnumberofmolecules = 500
 t_f = 2000
 dt = .1
 tmax = t_f * dt
@@ -75,7 +75,6 @@ if timetraces==True:
     ########################################################################################################################
     # plot the data
     ########################################################################################################################
-
 
     # start the figure : jj labels the different types of non-monotonicity (different non-monotonicity types will be put in different figures)
     for jj in range(4):
@@ -216,43 +215,39 @@ if fig10==True:
     # plot the data
     ########################################################################################################################
 
-
+    print('Plotting figure 10...')
     # start the figure : jj labels the different types of non-monotonicity (different non-monotonicity types will be put in different figures)
     jj=1
     namefig='fig10'
-
-
-
-    font = {'family':'Arial', 'size':10}
+    mymodel='3'
+    file='/Users/sdebuyl/sgo/stoch_LrpB/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
+    namefiletosavedata = 'stoch_' + mymodel + 'DS'
+    lists=mylists('3', file)
+    print('lists shape',lists)
+    font = {'family':'Arial', 'size':16}
     mpl.rc('font', **font)
     mpl.rc('legend', handlelength=1)
 
-    fig = plt.figure(namefig, figsize=(10,5))#, tight_layout=True)
+    fig = plt.figure(namefig, figsize=(12,5))#, tight_layout=True)
     gs = gridspec.GridSpec(1,2, width_ratios=[5,5], height_ratios=[1])
 
     # create a subplot for the concentration of dimers as a function of time
     ax = fig.add_subplot(gs[0])
-    ax.set_title('A', size=10, x=-0.2, y=1.1, ha='left')
+    ax.set_title('A', size=10, x=-0.2, y=.9, ha='left')
     #axleg = fig.add_subplot(1, 4, 4)
     # ax.set_yscale('log')
     # 	#ax.set_ylim([0.0, 4*ssdimer])
     ax.set_xlabel('time')
     ax.set_ylabel('dimer copy number')
-    # create a subplot for the histogram of fano factors
-    ax2 = fig.add_subplot(gs[1])
-    ax2.set_title('B', size=10, x=-0.2, y=1.1, ha='left')
 
-    ax2.set_xlabel('Fano factor')
-    ax2.set_ylabel('freq. of solutions')
 
     # loop over all simulations for the "j" type
     for k in range(len(lists[jj])):
 
 
         myparams = np.loadtxt(file + namefiletosavedata + '_parms_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-        #mymeans = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-        #myvars = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
         ts = np.loadtxt(file + namefiletosavedata + '_ts_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+
         dimts=np.shape(ts)
         pars = pars_comm
         for idx, par in enumerate(os.nameparameters):
@@ -271,16 +266,16 @@ if fig10==True:
 
         # remove transient before computing mean-variance
         ts_transcient = ts#ts[:, 500:t_f]
-        mymeans_wt[jj][k] = np.mean(ts_transcient[vartoplot, :])
+        #mymeans_wt[jj][k] = np.mean(ts_transcient[vartoplot, :])
         #print(str(lists[jj][k]), 'mean', mymeans_wt[jj][k])
-        myvars_wt[jj][k] = np.var(ts_transcient[vartoplot, :])
+        #myvars_wt[jj][k] = np.var(ts_transcient[vartoplot, :])
         #print(str(lists[jj][k]), 'var', myvars_wt[jj][k])
 
         # plot a selection of time traces, and the corresponding response curve -- random.sample(max_number_traces_on_one_plot)
         #range(len(lists[jj]))
         if k==0:
             sampling=random.sample(lists[jj],max_number_traces_on_one_plot)
-            #if jj==1:
+            sampling=[759, 161, 1480, 1264, 1216, 1478, 76, 1275, 1549, 1091, 1079, 237, 1122, 211, 1278]#if jj==1:
              #   [214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
             #sampling=[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
             tempp=lists[jj]
@@ -290,25 +285,28 @@ if fig10==True:
 
         if np.in1d(lists[jj][k],sampling): #max_number_traces_on_one_plot):
 
-            sample = np.arange(500,len(t),100)
-            if mymeans_wt[jj][k]!=0:
-                mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
+            sample = np.arange(1000,len(t),10)
+            #if mymeans_wt[jj][k]!=0:
+            #    mylabel='%.3f'%(myvars_wt[jj][k]/mymeans_wt[jj][k])
 
-            else:
-                mylabel='nan'
-            l = ax.plot(t[sample], ts[vartoplot][sample],label=mylabel,linewidth=.7)
-            sample = np.arange(0, len(tt), 100)
-            ax.plot(tt[sample], dde[sample,vartoplot], c=l[0].get_color(),linewidth=.7)
+            #else:
+            #    mylabel='nan'
+            l = ax.plot(t[sample], ts[vartoplot,sample],linewidth=.7)
+            sample = np.arange(0, len(tt), 1)
+            #ax.plot(tt[sample], dde[sample,vartoplot], c=l[0].get_color(),linewidth=.7)
             # ax.set_yscale('log')
-            ax.set_ylim([0, maxnumberofmolecules * 1.2])
+            ax.set_ylim([0, maxnumberofmolecules * 1.6])
+
+
+    # create a subplot for the histogram of fano factors
+    ax2 = fig.add_subplot(gs[1])
+    ax2.set_title('B', size=10, x=-0.2, y=.9, ha='left')
+
+    ax2.set_xlabel('Fano factor')
+    ax2.set_ylabel('freq. of solutions')
 
     fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/stoch_LrpB/')
     fano3DS = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/sgo/stoch_3DS/')
-    if 1 == 9:
-        fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
-        fano2DS = load_ff('2', DDS, '/Users/sdebuyl/stoch_2DS/')
-        fanoMDS = load_ff('M', MDS, '/Users/sdebuyl/stoch_MDS/')
-        fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
 
     bins = np.linspace(0, 20, 100)
     bins = np.append(bins, np.max([np.max(fanoLrpB), np.max(fano3DS)]))
