@@ -21,6 +21,7 @@ def load_ff(mymodel,oscillators,file):
                 list0.append(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '1':
                 list1.append(int(kk[18 + LrpB_shift:end]))
+                print(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '2':
                 list2.append(int(kk[18 + LrpB_shift:end]))
             if kk[16 + LrpB_shift:17 + LrpB_shift] == '3':
@@ -57,10 +58,12 @@ def load_ff(mymodel,oscillators,file):
 
         for k in range(len(lists[jj])):  #np.random.choice(len(lists[jj]),160)
             mymeans_wt = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-            myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
-            temp = mymeans_wt[vartoplot]
-            if temp!=0:
-                myfanofactors=np.append(myfanofactors,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
+            if mymeans_wt.shape[0]!=2:
+
+                myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+                temp = mymeans_wt[vartoplot]
+                if temp!=0:
+                    myfanofactors=np.append(myfanofactors,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
 
 
     return myfanofactors

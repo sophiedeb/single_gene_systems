@@ -9,10 +9,24 @@ import random as random
 import matplotlib as mpl
 from load_fano_from_sim import *
 
+
+########################################################################################################################
+# Choose analysis to be performed:
+########################################################################################################################
+
+
+#Plot a few time traces together with response curves and fano factors:
 timetraces=False
+#Plot fano factors as a function of dimer copy number
+#(diff. colors for diff. types of non monotonicity) - compare the diff models
 noisefig=False
-fig10=True
-# for jj=1[214, 120, 541, 35, 116, 431, 494, 622, 15, 1010, 815, 618, 573, 627, 403]
+#Plot figure 10 of the paper
+fig10=False
+#Look at multistability and high copy number (bigger than 500)
+multistab=True
+
+
+
 
 ########################################################################################################################
 # inputs to be adapted according to the model
@@ -27,7 +41,7 @@ if fig10==True:
     LrpBornot=True
 
 # inputs that can vary as a function of the performed analysis
-maxnumberofmolecules = 500
+maxnumberofmolecules = 10
 t_f = 2000
 dt = .1
 tmax = t_f * dt
@@ -55,64 +69,6 @@ physrange = physiologicalRange();
 pars_comm = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1};
 
 
-########################################################################################################################
-# load data, put data in lists (according to non-monotonicity type)
-########################################################################################################################
-
-if LrpBornot==True:
-    file = '/Users/sdebuyl/sgo/stoch_LrpB/'#'/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
-else:
-    file = '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS/'
-#LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
-namefiletosavedata = 'stoch_' + mymodel + 'DS'
-# actually import the data:
-mylist = ospack.listdir(file)
-print(len(mylist))
-# create list for each type of non-monotonicity
-list0 = list()
-list1 = list()
-list2 = list()
-list3 = list()
-LrpB_shift=0
-for kk in mylist:
-
-
-    if kk.find('stoch_' + mymodel + 'DS_parms_') != -1:
-        end = kk.find('.txt')
-        print('looking', kk[16 + LrpB_shift:17 + LrpB_shift], int(kk[18 + LrpB_shift:end]))
-        if kk[16 + LrpB_shift:17 + LrpB_shift] == '0':
-            list0.append(int(kk[18 + LrpB_shift:end]))
-        if kk[16 + LrpB_shift:17 + LrpB_shift] == '1':
-            list1.append(int(kk[18 + LrpB_shift:end]))
-        if kk[16 + LrpB_shift:17 + LrpB_shift] == '2':
-            list2.append(int(kk[18 + LrpB_shift:end]))
-        if kk[16 + LrpB_shift:17 + LrpB_shift] == '3':
-            list3.append(int(kk[18 + LrpB_shift:end]))
-
-
-
-lists = [list0, list1, list2, list3]
-
-print('len list 0', len(list0))
-print('len list 1', len(list1))
-print('len list 2', len(list2))
-print('len list 3', len(list3))
-
-
-# we will plot the fano factor as a function of the mean value of the dimer concentration
-# we first create empty arrays to be filled with means and variances of each simulation
-mymeans0 = np.zeros(len(list0))
-mymeans1 = np.zeros(len(list1))
-mymeans2 = np.zeros(len(list2))
-mymeans3 = np.zeros(len(list3))
-
-mymeans_wt = [mymeans0, mymeans1, mymeans2, mymeans3]
-myvars0 = np.zeros(len(list0))
-myvars1 = np.zeros(len(list1))
-myvars2 = np.zeros(len(list2))
-myvars3 = np.zeros(len(list3))
-
-myvars_wt = [myvars0, myvars1, myvars2, myvars3]
 
 if timetraces==True:
 
@@ -253,8 +209,6 @@ if noisefig==True:
              if mymeans_wt[vartoplot]!=0.0:
                 ax.scatter(mymeans_wt[vartoplot],myvars_wt[vartoplot]/mymeans_wt[vartoplot])
      fig3.savefig('noise.pdf')
-
-
 
 if fig10==True:
 
@@ -400,3 +354,100 @@ if fig10==True:
     #
     # plt.plot(mymeans_wt[1][temp], myvars_wt[1][temp] / mymeans_wt[1][temp], 'bo')
     # fig2.savefig(namefig2+'_noise.pdf')
+
+
+if multistab==True:
+    print('LrpB')
+    file='/Users/sdebuyl/sgo/stoch_LrpB/'
+    mylist = ospack.listdir(file)
+    print('number of not too high/multi simulations ', (len(mylist)-4)/5)
+    file=file +'stoch_3DS_too_high.txt'
+
+    toohigh = np.loadtxt(file)
+    print('too high', toohigh.shape)
+    multi=np.loadtxt('/Users/sdebuyl/sgo/stoch_LrpB/stoch_3DS_multi_parms.txt')
+    print('multi',multi.shape)
+    print('')
+
+    #stoch_3DS_multi_parms
+    print('3DS')
+    file='/Users/sdebuyl/sgo/stoch_3DS/'
+    mylist = ospack.listdir(file)
+    print('number of not too high/multi simulations ', (len(mylist)-4)/4)
+    toohigh = np.loadtxt(file+'stoch_3DS_too_high.txt')
+    print('too high', toohigh.shape)
+    multi = np.loadtxt(file +'stoch_3DS_multi_parms.txt')
+    print('multi', multi.shape)
+    print('')
+
+
+    #
+    print('2DS')
+    toohigh = np.loadtxt('/Users/sdebuyl/sgo/stoch_2DS/stoch_2DS_too_high.txt')
+    print('too high', toohigh.shape)
+    multi = np.loadtxt('/Users/sdebuyl/sgo/stoch_2DS/stoch_2DS_multi_parms.txt')
+    print('multi', multi.shape)
+    #
+    print('MDS')
+    toohigh = np.loadtxt('/Users/sdebuyl/stoch_MDS/stoch_MDS_too_high.txt')
+    print('too high', toohigh.shape)
+    multi = np.loadtxt('/Users/sdebuyl/stoch_MDS/stoch_MDS_multi_parms.txt')
+    print('multi', multi.shape)
+
+
+
+
+
+
+
+# if 2==3 :
+#     if LrpBornot == True:
+#         file = '/Users/sdebuyl/sgo/stoch_LrpB/'  # '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS_LrpB/'
+#     else:
+#         file = '/Users/sdebuyl/sgo/stoch_' + mymodel + 'DS/'
+#     # LrpB_shift = 0  # this variable was introduced to be able to change label the position of numbers keeping track of different simulations
+#     namefiletosavedata = 'stoch_' + mymodel + 'DS'
+#     # actually import the data:
+#     mylist = ospack.listdir(file)
+#     print(len(mylist))
+#     # create list for each type of non-monotonicity
+#     list0 = list()
+#     list1 = list()
+#     list2 = list()
+#     list3 = list()
+#     LrpB_shift = 0
+#     for kk in mylist:
+#
+#         if kk.find('stoch_' + mymodel + 'DS_parms_') != -1:
+#             end = kk.find('.txt')
+#             print('looking', kk[16 + LrpB_shift:17 + LrpB_shift], int(kk[18 + LrpB_shift:end]))
+#             if kk[16 + LrpB_shift:17 + LrpB_shift] == '0':
+#                 list0.append(int(kk[18 + LrpB_shift:end]))
+#             if kk[16 + LrpB_shift:17 + LrpB_shift] == '1':
+#                 list1.append(int(kk[18 + LrpB_shift:end]))
+#             if kk[16 + LrpB_shift:17 + LrpB_shift] == '2':
+#                 list2.append(int(kk[18 + LrpB_shift:end]))
+#             if kk[16 + LrpB_shift:17 + LrpB_shift] == '3':
+#                 list3.append(int(kk[18 + LrpB_shift:end]))
+#
+#     lists = [list0, list1, list2, list3]
+#
+#     print('len list 0', len(list0))
+#     print('len list 1', len(list1))
+#     print('len list 2', len(list2))
+#     print('len list 3', len(list3))
+#
+#     # we will plot the fano factor as a function of the mean value of the dimer concentration
+#     # we first create empty arrays to be filled with means and variances of each simulation
+#     mymeans0 = np.zeros(len(list0))
+#     mymeans1 = np.zeros(len(list1))
+#     mymeans2 = np.zeros(len(list2))
+#     mymeans3 = np.zeros(len(list3))
+#
+#     mymeans_wt = [mymeans0, mymeans1, mymeans2, mymeans3]
+#     myvars0 = np.zeros(len(list0))
+#     myvars1 = np.zeros(len(list1))
+#     myvars2 = np.zeros(len(list2))
+#     myvars3 = np.zeros(len(list3))
+#
+#     myvars_wt = [myvars0, myvars1, myvars2, myvars3]

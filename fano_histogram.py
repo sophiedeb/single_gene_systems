@@ -24,22 +24,17 @@ import numpy as np
 
 
 
-fano1_name='MDSn'
+fano1_name='LrpB'
 print(fano1_name)
-fanoMDSn = load_ff(mymodel='M',oscillators=MDS,file='/Users/sdebuyl/stoch_MDSn/')
-fano1=fanoMDSn
+
+fano1=load_ff(mymodel='3',oscillators=DDDS,file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
 
 fano2_name='3DS'
 print(fano2_name)
 #fanoMDS = load_ff(mymodel='M', oscillators=MDS, file='/Users/sdebuyl/stoch_MDS/')
-fano3DS = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/sgo/stoch_3DS/')
+fano3DS = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/stoch_3DS/')
 fano2=fano3DS
 
-if 1==9:
-    fanoLrpB=load_ff(mymodel='3',oscillators=DDDS,file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
-    fano2DS=load_ff('2',DDS,'/Users/sdebuyl/stoch_2DS/')
-    fanoMDS=load_ff('M',MDS,'/Users/sdebuyl/stoch_MDS/')
-    fanoLrpB = load_ff(mymodel='3', oscillators=DDDS, file='/Users/sdebuyl/Dropbox/stoch_LrpB/')
 
 bins=np.linspace(0,20,100)
 bins=np.append(bins,np.max([np.max(fano1),np.max(fano2)]))
@@ -59,27 +54,11 @@ if 1==1:
 print(fano1_name,fano1.shape)
 #print('2ds',fano2DS.shape)
 print(fano2_name,fano2.shape)
-print(fano1_name+' bigger than 2',len(np.where(fano1>2.0)[0])/len(fano1))
-print(fano2_name+'bigger than 2',len(np.where(fano2>2.0)[0])/len(fano2))
-
-#print('lrpB bigger between 1 and 10',len(np.where(np.logical_and(2<fanoLrpB, fanoLrpB<10.0))[0])/len(fanoLrpB))
-#print('3DS bigger ',len(np.where(np.logical_and(2<fano3DS, fano3DS<10.0))[0])/len(fano3DS))
-
-# bins= [-1.0,1,2,10,max(fano3DS)]
-# data = fano3DS
-# hist, bin_edges = np.histogram(data,bins) # make the histogram
+print(fano1_name+' bigger than 2',len(np.where(fano1>1.2)[0])/len(fano1))
+print(fano2_name+'bigger than 2',len(np.where(fano2>1.2)[0])/len(fano2))
 #
-# fig,ax = plt.subplots()
 #
-# # Plot the histogram heights against integers on the x axis
-# ax.bar(range(len(hist)),hist,width=1)
-#
-# # Set the ticks to the middle of the bars
-# ax.set_xticks([0.5+i for i,j in enumerate(hist)])
-#
-# # Set the xticklabels to a string that tells us what the bin edges were
-# ax.set_xticklabels(['{} - {}'.format(bins[i],bins[i+1]) for i,j in enumerate(hist)])
-#
-# plt.savefig('hist2DS.pdf')
-
-
+# fano1rest=fano1[0:800]
+# fano2rest=fano2[0:800]
+# print(fano1_name+' bigger than 1 restricted',len(np.where(fano1rest>1.5)[0])/len(fano1rest))
+# print(fano2_name+' bigger than 1 restricted',len(np.where(fano2rest>1.5)[0])/len(fano2rest))
