@@ -1,11 +1,13 @@
-from parametersgs import *
-import itertools as it
-import multiprocessing
+"""figure_noise_monotonic_vs_not.py"""
 
-from matplotlib import gridspec
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
+
+from SGS import *
+
 import matplotlib.pylab as plt
 import os as ospack
-from collections import OrderedDict
 
 
 
@@ -71,7 +73,6 @@ print('len list 0', len(list0))
 print('len list 1', len(list1))
 print('len list 2', len(list2))
 print('len list 3', len(list3))
-tot_simulations_3DS=len(list0)+len(list1)+len(list2)+len(list3)
 
 # we will plot the fano factor as a function of the mean value of the dimer concentration
 # we first create empty arrays to be filled with means and variances of each simulation
@@ -112,9 +113,9 @@ for jj in range(4):
                 myfanofactor_2=np.append(myfanofactor_2,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
             if jj==3:
                 myfanofactor_3=np.append(myfanofactor_3,myvars_wt[vartoplot] / mymeans_wt[vartoplot])
-            if( myvars_wt[vartoplot] / mymeans_wt[vartoplot]>1000 or  myvars_wt[vartoplot] / mymeans_wt[vartoplot]<.1):
+            if myvars_wt[vartoplot] / mymeans_wt[vartoplot]>1000 or  myvars_wt[vartoplot] / mymeans_wt[vartoplot]<.1:
                 print( myvars_wt[vartoplot] / mymeans_wt[vartoplot])
-            if (myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2):
+            if myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2:
                 counter_spikes_3DS = counter_spikes_3DS + 1
 
 

@@ -1,10 +1,13 @@
-from parametersgs import *
-import itertools as it
-import multiprocessing
+"""scan_random_stoch_analysis.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
+
+from SGS import *
 from matplotlib import gridspec
 import matplotlib.pylab as plt
-import os as ospack
-from collections import OrderedDict
+
 import random as random
 import matplotlib as mpl
 from load_fano_from_sim import *
@@ -105,12 +108,8 @@ if mymodel == '2':
 if mymodel == '3':
     vartoplot = 9
 # for dimer   MDS: 4-- DDS:5 -- DDDS:9
-# physiological range of the parameters
-physrange = physiologicalRange();
 # parameters that are commun to all models and fixed,  (here we focussed on systems with no delay).
-pars_comm = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1};
-
-
+pars_comm = {'taum': 0, 'taumRNA': 0, 'DNAtot': 1, 'vol': 1}
 
 if timetraces==True:
 
@@ -157,13 +156,13 @@ if timetraces==True:
             for idx, par in enumerate(os.nameparameters):
                 pars[par] = myparams[idx]
             # assign parameters "pars" to the "os" model,  and compute steady state of the model
-            os.setparameters(pars)
-            os.steadystate()
+            os.set_parameters(pars)
+            os.steady_state()
 
             # intial conditions - set in to be ss for proteins and mrna, dna starts unbound.
             myinitialcond = np.zeros(dimts[0])
             for kk in range(dimts[0]):
-                myinitialcond[kk] = os.ss[os.allvars[kk]]
+                myinitialcond[kk] = os.ss[os.ALL_VARS[kk]]
             #we solve the deterministic model
             tt = np.arange(0, 2000, .001)
             dde = odeint(os.eqns, myinitialcond, tt, args=(1.0, 1.0))
@@ -200,7 +199,7 @@ if timetraces==True:
                 # ax.set_yscale('log')
                 ax.set_ylim([0, maxnumberofmolecules * 1.2])
                 xx = np.linspace(0, 1000, 1000)
-                myrate = os.transcriptionrate(xx) / os.transcriptionrate(0)
+                myrate = os.transcription_rate(xx) / os.transcription_rate(0)
                 ax2.plot(xx, myrate, c=l[0].get_color())
                 if mymeans_wt[jj][k] !=0:
                     ax3.scatter(mymeans_wt[jj][k],myvars_wt[jj][k]/mymeans_wt[jj][k], c=l[0].get_color())
@@ -295,13 +294,13 @@ if fig10==True:
         for idx, par in enumerate(os.nameparameters):
             pars[par] = myparams[idx]
         # assign parameters "pars" to the "os" model,  and compute steady state of the model
-        os.setparameters(pars)
-        os.steadystate()
+        os.set_parameters(pars)
+        os.steady_state()
 
         # intial conditions - set in to be ss for proteins and mrna, dna starts unbound.
         myinitialcond = np.zeros(dimts[0])
         for kk in range(dimts[0]):
-            myinitialcond[kk] = os.ss[os.allvars[kk]]
+            myinitialcond[kk] = os.ss[os.ALL_VARS[kk]]
         #we solve the deterministic model
         tt = np.arange(0, 2000, .001)
         dde = odeint(os.eqns, myinitialcond, tt, args=(1.0, 1.0))
