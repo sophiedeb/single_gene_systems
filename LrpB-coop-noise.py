@@ -1,10 +1,13 @@
-from parametersgs import *
-import itertools as it
-import multiprocessing
+"""LrpB-coop-noise.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
+
+from SGS import *
 from matplotlib import gridspec
 import matplotlib.pylab as plt
 import os as ospack
-from collections import OrderedDict
 
 
 ########################################################################################################################
@@ -85,9 +88,19 @@ myvars_wt = [myvars0, myvars1, myvars2, myvars3]
 
 ax = fig.add_subplot(gs[0])
 
-myparamsn=oscillators().nameparameters
+myparamsn = oscillators().nameparameters
 
-print(myparamsn[20],myparamsn[24],myparamsn[21],myparamsn[25],myparamsn[22],myparamsn[26],myparamsn[23],myparamsn[27])
+#  3DS np.array(['beta', 'gammam', 'gammamRNA', 'gammad', 'alphaass', 'alphadiss', 'phi0',
+#                                        'f1', 'f2', 'f3','f12', 'f13','f23','f123',
+#                                        'kb1','kb2','kb3','ku1', 'ku2', 'ku3',
+#                                        'bcoop12','bcoop13','bcoop23','bcoop123',
+#                                        'ucoop12','ucoop13','ucoop23','ucoop123']);
+
+# 2DS np.array(['beta', 'gammam', 'gammamRNA', 'gammad', 'alphaass', 'alphadiss', 'phi0', 'f1',
+#            'f2', 'f12', 'kb1', 'ku1', 'kb2', 'ku2', 'bcoop', 'ucoop'])
+
+# MDS np.array(['beta', 'gammam', 'gammamRNA', 'gammad', 'alphaass', 'alphadiss', 'phi0', 'fm','fd', 'Km', 'Kd', 'kbm', 'kbd']);
+
 
 for jj in range(4):
 
@@ -95,6 +108,8 @@ for jj in range(4):
         mymeans_wt = np.loadtxt(file + namefiletosavedata + '_means_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
         myvars_wt = np.loadtxt(file + namefiletosavedata + '_vars_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
         myparams = np.loadtxt(file + namefiletosavedata + '_parms_' + str(jj) + '_' + str(lists[jj][k]) + '.txt')
+
+        # TODO replace numbers
 
         Kdim = myparams[20]/myparams[24]+myparams[21]/myparams[25]+myparams[22]/myparams[26]+myparams[23]/myparams[27]
 
@@ -115,9 +130,6 @@ for jj in range(4):
 cbar=fig.colorbar(ll, cax=axleg, label='cooperativity')
 cbar.ax.set_yticklabels([str(10**(-2)),str(10**(-1)),'0','10',str(10**2)])
 plt.tight_layout()
-
-
-
 
 fig.savefig('noise_LrpB_coop.pdf')
 

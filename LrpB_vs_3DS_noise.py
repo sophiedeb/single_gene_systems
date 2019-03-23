@@ -1,6 +1,10 @@
-from parametersgs import *
-import itertools as it
-import multiprocessing
+"""LrpB_vs_3DS_noise.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
+
+from SGS import *
 
 from matplotlib import gridspec
 import matplotlib.pylab as plt
@@ -111,7 +115,7 @@ for k in np.random.choice(len(lists[jj]),160):
         if (myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 1000 or myvars_wt[vartoplot] / mymeans_wt[
             vartoplot] < .1):
             print(myvars_wt[vartoplot] / mymeans_wt[vartoplot])
-        if (myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2):
+        if myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2:
             counter_spikes_LrpB=counter_spikes_LrpB+1
 
     ax.set_xlim([0,maxnumberofmolecules])
@@ -164,7 +168,6 @@ print('len list 0', len(list0))
 print('len list 1', len(list1))
 print('len list 2', len(list2))
 print('len list 3', len(list3))
-tot_simulations_3DS=len(list0)+len(list1)+len(list2)+len(list3)
 
 # we will plot the fano factor as a function of the mean value of the dimer concentration
 # we first create empty arrays to be filled with means and variances of each simulation
@@ -203,9 +206,9 @@ for jj in range(4):
                 ax.scatter(mymeans_wt[vartoplot], myvars_wt[vartoplot] / mymeans_wt[vartoplot], c=mycolors[jj], label='2', marker="o",s=1)
             if jj==3:
                 ax.scatter(mymeans_wt[vartoplot], myvars_wt[vartoplot] / mymeans_wt[vartoplot], c=mycolors[jj], label='3', marker="o",s=1)
-            if( myvars_wt[vartoplot] / mymeans_wt[vartoplot]>1000 or  myvars_wt[vartoplot] / mymeans_wt[vartoplot]<.1):
+            if myvars_wt[vartoplot] / mymeans_wt[vartoplot]>1000 or  myvars_wt[vartoplot] / mymeans_wt[vartoplot]<.1:
                 print( myvars_wt[vartoplot] / mymeans_wt[vartoplot])
-            if (myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2):
+            if myvars_wt[vartoplot] / mymeans_wt[vartoplot] > 2:
                 counter_spikes_3DS = counter_spikes_3DS + 1
         ax.set_xlim([0,maxnumberofmolecules])
         ax.set_ylim([0.1,1000])

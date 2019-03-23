@@ -1,3 +1,8 @@
+"""load_fano_from_sim.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
 import os as ospack
 import numpy as np
 

@@ -1,3 +1,7 @@
+"""fano_histogram.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
 
 #make nicer histograms:
 #https://stackoverflow.com/questions/26218704/matplotlib-histogram-with-collection-bin-for-high-values
@@ -11,7 +15,7 @@
 #from matplotlib import gridspec
 
 
-from parametersgs import *
+from SGS import *
 from load_fano_from_sim import *
 
 import numpy as np

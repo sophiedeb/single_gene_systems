@@ -1,4 +1,10 @@
-from parametersgs import *
+"""noise_comparison_plot.py"""
+
+__author__ = "Sophie de Buyl"
+__email__ = "Sophie.de.Buyl@vub.be"
+
+
+from SGS import *
 import itertools as it
 import multiprocessing
 from matplotlib import gridspec
